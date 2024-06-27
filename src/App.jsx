@@ -6,10 +6,9 @@ import Counter from './components/Counter';
 import Board from './components/Board';
 import Title from './components/Title';
 
-
-
 const App = () => {
   const [isActive, setIsActive] = useState(false);
+  const [resetSignal, setResetSignal] = useState(false);
 
   return (
     <div className="App">
@@ -18,8 +17,8 @@ const App = () => {
         <div className="container">
           <Setting />
           <div className="game_container">
-            <Counter isActive={isActive} setIsActive={setIsActive} />
-            <Board setIsActive={setIsActive} />
+            <Counter isActive={isActive} setIsActive={setIsActive} setResetSignal={setResetSignal} />
+            <Board setIsActive={setIsActive} resetSignal={resetSignal} />
             <Title />
           </div>
         </div>

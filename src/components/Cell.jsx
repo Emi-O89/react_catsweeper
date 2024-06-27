@@ -26,7 +26,7 @@ const Cell = ({ isCat, isRevealed, numCats, onClick }) => {
 
   return (
     <div className={`cell ${isRevealed ? 'revealed' : ''}`} onClick={handleClick}>
-      {isRevealed && (isCat ? <img src={cellCatImage} alt="Cat" style={{ width: '18px', height: '18px' }} /> : <span className={`${getNumClass()}`}>{numCats}</span>)}
+      {isRevealed && (isCat ? <img src={cellCatImage} alt="Cat" style={{ width: '18px', height: '18px' }} /> : numCats > 0 ? <span className={`${getNumClass()}`}>{numCats}</span> : null)}
     </div>
   );
 };

@@ -2,16 +2,10 @@ import React from 'react';
 import '../App.css';
 import nikukyuImage from '../img/nikukyu.png';
 
-
-// secondsを0にリセットし、タイマーを停止する
-const Reset = ({ setSeconds, setIsActive }) => {
-  const handleReset = () => {
-    setSeconds(0);
-    setIsActive(false);
-  };
-
+// リセットボタンをクリックするとボードを初期設定に戻す
+const Reset = ({ resetGame }) => {
   return (
-    <button className="reset_btn" type="button" onClick={handleReset}>
+    <button className="reset_btn" type="button" onClick={resetGame}>
       <img className="reset_btn-img" src={nikukyuImage} alt="Reset" />
     </button>
   );

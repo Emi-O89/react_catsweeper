@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 
-const Timer = ({ isActive, setIsActive }) => {
+const Timer = ({ isActive, seconds, setSeconds }) => {
   // 「seconds」秒数、「setSeconds」秒数を更新する関数
   // 「isActive」タイマーが動作している状態、「setIsActive」isActiveを更新する関数
   // 「isActive」の初期値は停止状態
-  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     let interval = null;
 
-    // isActiveがtrueのとき、1秒ごとにsecondsを+1更新するintervalを設定
-    // isActiveがfalseのとき、intervalをクリアしてタイマーを停止
-    // コンポーネントがアンマウントされるときにintervalをクリア
-    // isActiveが変更されたときのみuseEffectが実行される
     if (isActive) {
-      interval = setInterval(() => {
+      interval = setInterval(() => {           // isActiveがtrueのとき、1秒ごとにsecondsを+1更新するintervalを設定
         setSeconds(seconds => seconds + 1);
       }, 1000);
-    } else if (!isActive && seconds !== 0) {
+    } else if (!isActive && seconds !== 0) {   // isActiveがfalseかつ秒数が0でないとき、タイマー停止（インターバルクリア）
       clearInterval(interval);
     }
+    // isActive が更新されるたびにインターバルをクリアする
     return () => clearInterval(interval);
-  }, [isActive, seconds]);
+  }, [isActive]);
 
   return (
     <div className="counter">
