@@ -9,6 +9,8 @@ import Title from './components/Title';
 const App = () => {
   const [isActive, setIsActive] = useState(false);
   const [resetSignal, setResetSignal] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWin, setGameWin] = useState(false); 
 
   return (
     <div className="App">
@@ -18,8 +20,8 @@ const App = () => {
           <Setting />
           <div className="game_container">
             <Counter isActive={isActive} setIsActive={setIsActive} setResetSignal={setResetSignal} />
-            <Board setIsActive={setIsActive} resetSignal={resetSignal} />
-            <Title />
+            <Board setIsActive={setIsActive} resetSignal={resetSignal} setGameOver={setGameOver} setGameWin={setGameWin}  />
+            <Title gameOver={gameOver} gameWin={gameWin} />
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import Score from './Score';
 import Reset from './Reset';
 import Timer from './Timer';
 
-const Counter = ({ isActive, setIsActive, setResetSignal }) => {
+const Counter = ({ isActive, setIsActive, setResetSignal, gameWin }) => {
   const [seconds, setSeconds] = useState(0);
 
   // リセットボタンを押すとタイマーの表示が0に戻る
@@ -18,7 +18,7 @@ const Counter = ({ isActive, setIsActive, setResetSignal }) => {
     <div className='counter-wrap'>
       <Score />
       <Reset resetGame={resetGame} />
-      <Timer isActive={isActive} setIsActive={setIsActive} seconds={seconds} setSeconds={setSeconds} />
+      <Timer isActive={isActive} setIsActive={setIsActive} seconds={seconds} setSeconds={setSeconds} gameWin={gameWin} />
     </div>
   );
 };

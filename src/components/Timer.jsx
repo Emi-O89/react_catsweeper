@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 
-const Timer = ({ isActive, seconds, setSeconds }) => {
+const Timer = ({ isActive, seconds, setSeconds, gameWin }) => {
   // 「seconds」秒数、「setSeconds」秒数を更新する関数
   // 「isActive」タイマーが動作している状態、「setIsActive」isActiveを更新する関数
   // 「isActive」の初期値は停止状態
@@ -9,16 +9,16 @@ const Timer = ({ isActive, seconds, setSeconds }) => {
   useEffect(() => {
     let interval = null;
 
-    if (isActive) {
-      interval = setInterval(() => {           // isActiveがtrueのとき、1秒ごとにsecondsを+1更新するintervalを設定
+    if (isActive && !gameWin) {
+      interval = setInterval(() => {           // タイマーが作動中かつゲームクリアでないとき、1秒ごとにsecondsを+1更新するintervalを設定
         setSeconds(seconds => seconds + 1);
       }, 1000);
     } else if (!isActive && seconds !== 0) {   // isActiveがfalseかつ秒数が0でないとき、タイマー停止（インターバルクリア）
       clearInterval(interval);
     }
-    // isActive が更新されるたびにインターバルをクリアする
+    // isActive、gameWin が更新されるたびにインターバルをクリアする
     return () => clearInterval(interval);
-  }, [isActive]);
+  }, [isActive, gameWin]);
 
   return (
     <div className="counter">

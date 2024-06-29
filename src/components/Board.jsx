@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import Cell from './Cell';
 
-const Board = ({ setIsActive, resetSignal }) => {
+const Board = ({ setIsActive, resetSignal, setGameOver, gameOver, setGameWin }) => {
   const boardSize = 16;
-  const [gameOver, setGameOver] = useState(false);       // ゲームオーバー
   const [firstClick, setFirstClick] = useState(true);    // 最初のセルクリックでタイマー開始
   const [board, setBoard] = useState(() => generateInitialBoard());
 
@@ -17,7 +16,7 @@ const Board = ({ setIsActive, resetSignal }) => {
         row.push({           // row配列にセルの初期状態をオブジェクトとして追加
           isCat: false,      // 猫なし
           isRevealed: false, // 開示セルなし
-          numCats: 0,         // 数字なし
+          numCats: 0,        // 数字なし
           isFlagged: false   // フラグなし
         });
       }
@@ -29,7 +28,7 @@ const Board = ({ setIsActive, resetSignal }) => {
 
   // 【2】猫セルをランダムに配置
   const placeCats = (board) => {       // 猫セルを配置する関数を作成
-    const newBoard = [...board];  // 現在のボードを複製してnewBoardを作成（元のボードを操作しない）
+    const newBoard = [...board];       // 現在のボードを複製してnewBoardを作成（元のボードを操作しない）
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
         if (Math.random() < 0.08) {        // 1/10の確率で
@@ -79,7 +78,7 @@ const Board = ({ setIsActive, resetSignal }) => {
     }
     return newBoard;
   };
-  
+
 
   // 【４】デフォルトセルがクリックされた時の処理
   const handleCellClick = (row, col) => {              // 行番号rowと列番号colを取ることでクリックされたセルの位置を特定 
@@ -133,10 +132,20 @@ const Board = ({ setIsActive, resetSignal }) => {
       revealAdjacentCells(row, col);
     }
   
+    checkGameWin(newBoard);  // ゲームクリアになっていないか確認
     setBoard(newBoard);
   };
 
-  // セルの右クリックを処理
+  // 【５】ゲームクリアのチェック
+  const checkGameWin = (newBoard) => {
+    const allCellsRevealed = newBoard.every(row => row.every(cell => cell.isRevealed || cell.isCat));
+    if (allCellsRevealed) {
+      setGameWin(true);
+      setIsActive(false);
+    }
+  };
+
+  // 【６】セルのみぎクリック時
   const handleCellRightClick = (row, col) => {
     if (gameOver || board[row][col].isRevealed) return;    // ゲームオーバーまたは該当セルが開示済みの場合は無視する
 
@@ -147,7 +156,7 @@ const Board = ({ setIsActive, resetSignal }) => {
   };
 
 
-  // 【５】ボードの描出
+  // 【７】ボードの描出
   const renderBoard = () => {
     return board.map((row, rowIndex) => (
       <div className="board-row" key={rowIndex}>
@@ -166,7 +175,7 @@ const Board = ({ setIsActive, resetSignal }) => {
     ));
   };
 
-  // 【６】リセットボタンクリック時
+  // 【８】リセットボタンクリック時
   const resetBoard = () => {
     const initialBoard = generateInitialBoard();   // 初期ボードを生成
     const boardWithCats = placeCats(initialBoard); // 猫を配置
@@ -174,14 +183,14 @@ const Board = ({ setIsActive, resetSignal }) => {
     setBoard(finalBoard);                          // 新しいボードをセット
   
     setGameOver(false);       // ゲームオーバーをリセット
+    setGameWin(false);        // ゲームクリアをリセット
     setFirstClick(true);      // 「最初のクリック」をリセット
-    setIsActive(false);       // タイマーを停止
+    setIsActive(false);       // タイマーをリセット
   };
 
   useEffect(() => {       // リセットボタンをクリックした時ボードを初期化
     resetBoard();
   }, [resetSignal]);
-
 
   return (
     <div className="board">
