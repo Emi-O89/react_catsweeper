@@ -17,7 +17,8 @@ const Board = ({ setIsActive, resetSignal }) => {
         row.push({           // row配列にセルの初期状態をオブジェクトとして追加
           isCat: false,      // 猫なし
           isRevealed: false, // 開示セルなし
-          numCats: 0         // 数字なし
+          numCats: 0,         // 数字なし
+          isFlagged: false   // フラグなし
         });
       }
       initialBoard.push(row);   // 生成したrowをinitialBoard配列に追加
@@ -53,7 +54,7 @@ const Board = ({ setIsActive, resetSignal }) => {
       { dx: 1, dy: 1 }    // 右下
     ];
 
-    const newBoard = [...board];
+    const newBoard = board.map(row => row.map(cell => ({ ...cell }))); // ボードをディープコピー
 
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
@@ -84,7 +85,7 @@ const Board = ({ setIsActive, resetSignal }) => {
   const handleCellClick = (row, col) => {              // 行番号rowと列番号colを取ることでクリックされたセルの位置を特定 
     if (gameOver || board[row][col].isRevealed) return;    // ゲームオーバーまたは該当セルが開示済みの場合は無視する
 
-    const newBoard = [...board];            // ボードを複製
+    const newBoard = board.map(row => row.map(cell => ({ ...cell })));   // ボードをディープコピー
     newBoard[row][col].isRevealed = true;   // 新しいボードの該当セルを開示
 
     setBoard(newBoard);                     // 新しいボードをセット
@@ -135,6 +136,16 @@ const Board = ({ setIsActive, resetSignal }) => {
     setBoard(newBoard);
   };
 
+  // セルの右クリックを処理
+  const handleCellRightClick = (row, col) => {
+    if (gameOver || board[row][col].isRevealed) return;    // ゲームオーバーまたは該当セルが開示済みの場合は無視する
+
+    const newBoard = board.map(row => row.map(cell => ({ ...cell }))); // ディープコピー
+    newBoard[row][col].isFlagged = !newBoard[row][col].isFlagged; // フラグの状態を反転
+
+    setBoard(newBoard); // 新しいボードをセット
+  };
+
 
   // 【５】ボードの描出
   const renderBoard = () => {
@@ -146,7 +157,9 @@ const Board = ({ setIsActive, resetSignal }) => {
             isCat={cell.isCat}
             isRevealed={cell.isRevealed}
             numCats={cell.numCats}
+            isFlagged={cell.isFlagged}
             onClick={() => handleCellClick(rowIndex, colIndex)}
+            onRightClick={() => handleCellRightClick(rowIndex, colIndex)}
           />
         ))}
       </div>
@@ -155,31 +168,20 @@ const Board = ({ setIsActive, resetSignal }) => {
 
   // 【６】リセットボタンクリック時
   const resetBoard = () => {
-    const currentBoard = [...board];  // 現在のボードの状態を取得
-  
     const initialBoard = generateInitialBoard();   // 初期ボードを生成
     const boardWithCats = placeCats(initialBoard); // 猫を配置
     const finalBoard = placeNum(boardWithCats);    // 数字を設定
+    setBoard(finalBoard);                          // 新しいボードをセット
   
-    // 現在のボードの各セルの状態を初期化する
-    currentBoard.forEach((row, i) => {
-      row.forEach((cell, j) => {
-        cell.isCat = finalBoard[i][j].isCat;
-        cell.isRevealed = false;  // 開示状態を初期化
-        cell.numCats = finalBoard[i][j].numCats;
-      });
-    });
-  
-    setBoard(currentBoard);   // ボードを更新
     setGameOver(false);       // ゲームオーバーをリセット
-    setFirstClick(true);      // 最初のクリックをリセット
+    setFirstClick(true);      // 「最初のクリック」をリセット
     setIsActive(false);       // タイマーを停止
   };
 
-  // リセットボタンをクリックした時ボードを初期化
-  useEffect(() => {
+  useEffect(() => {       // リセットボタンをクリックした時ボードを初期化
     resetBoard();
   }, [resetSignal]);
+
 
   return (
     <div className="board">

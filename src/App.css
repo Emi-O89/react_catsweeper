@@ -136,6 +136,7 @@
   border: 1px solid #888787;
   box-shadow: inset 2px 2px 0px 0px rgba(255, 255, 255, 1),
     inset -2px -2px 0px 0px rgba(44, 44, 44, 0.3);
+  position: relative;
 }
 
 .revealed {
@@ -172,6 +173,13 @@
   color: #B392BC;
   font-family: "Bungee Inline";
   font-size: 16px;
+}
+
+.question-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* ゲームタイトル */
